@@ -42,22 +42,6 @@ main(int argc, char *argv[])
 		if (fds[0].revents & POLLIN) {
 				char buffer[CMDLENGTH];
 				int bt = read(pipes[0][0], buffer, LENGTH(buffer));
-
-				// Trim UTF-8 characters properly
-				int j = bt - 1;
-				//while ((buffer[j] & 0b11000000) == 0x80)
-					//j--;
-				// Cache last character and replace it with a trailing space
-				char ch = buffer[j];
-				buffer[j] = ' ';
-				// Trim trailing spaces
-				while (buffer[j] == ' ')
-					j--;
-				buffer[j + 1] = '\0';
-
-				if (bt == LENGTH(buffer)) // Clear the pipe
-					while (ch != '\n' && read(pipes[0][0], &ch, 1) == 1);
-
 				strcpy(output[0], buffer);
 				printf("string received! = '%s'\n", output[0]);
 		} else if (fds[0].revents & POLLHUP) {
