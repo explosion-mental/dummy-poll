@@ -42,6 +42,8 @@ main(int argc, char *argv[])
 		if (fds[0].revents & POLLIN) {
 				char buffer[CMDLENGTH] = {0};
 				int bt = read(pipes[0][0], buffer, LENGTH(buffer));
+				if (buffer[bt - 1] == '\n') /* chop off ending new line, if one is present */
+					buffer[bt - 1] = '\0';
 				strcpy(output[0], buffer);
 				printf("string received! = '%s'\n", output[0]);
 		} else if (fds[0].revents & POLLHUP) {
