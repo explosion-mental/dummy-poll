@@ -18,6 +18,8 @@
 #define SIZE		2
 #define CMDLENGTH	50
 
+#define die(str)     do { fprintf(stderr, "error: line '%d': " str "\n", __LINE__);perror(" failed");exit(1);} while (0)
+
 static int running = 0;
 static int pipes[SIZE - 1][2];
 static char output[CMDLENGTH][SIZE - 1];
@@ -54,9 +56,7 @@ main(int argc, char *argv[])
 		//FIXME poll breaks (wakes up) whenever a signal is send to,
 		//might wanna detect errno == EINTR
 		if ((poll(fds, SIZE, -1)) == -1) {
-			fprintf(stderr, "%s: poll ", argv[0]);
-			perror("failed");
-			exit(EXIT_FAILURE);
+			die("poll returned '-1'");
 		}
 
 		/* X fd */
@@ -81,9 +81,7 @@ main(int argc, char *argv[])
 				}
 			}
 		} else if (fds[0].revents & POLLHUP) {
-			fprintf(stderr, "%s: main event loop, hang up\n", argv[0]);
-			perror(" failed");
-			_exit(1);
+			die("main loop event hangup");
 		}
 
 		/* pipes polling */
@@ -108,9 +106,7 @@ main(int argc, char *argv[])
 
 				strcpy(output[0], buffer);
 		} else if (fds[1].revents & POLLHUP) {
-			fprintf(stderr, "%s: getcmd hang up\n", argv[0]);
-			perror(" failed");
-			_exit(1);
+			die("pipe hangup");
 		}
 	}
 	XCloseDisplay(dpy);
