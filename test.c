@@ -20,7 +20,7 @@
 
 #define die(str)     do { fprintf(stderr, "error: line '%d': " str "\n", __LINE__);perror(" failed");exit(1);} while (0)
 
-static int running = 0;
+static int running = 1;
 static int pipes[SIZE - 1][2];
 static char output[CMDLENGTH][SIZE - 1];
 
