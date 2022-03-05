@@ -32,13 +32,10 @@ main(int argc, char *argv[])
 	fds[0].events = POLLIN;
 
 	while (running) {
-		//FIXME poll breaks (wakes up) whenever a signal is send to,
-		//might wanna detect errno == EINTR
-		if ((poll(fds, SIZE, -1)) == -1) {
+		if ((poll(fds, SIZE, -1)) == -1)
 			die("poll returned '-1'");
-		}
 
-		/* pipes polling */
+		/* main, stdin */
 		if (fds[0].revents & POLLIN) {
 				char buffer[CMDLENGTH] = {0};
 				int bt = read(STDIN_FILENO, buffer, LENGTH(buffer));
@@ -46,9 +43,9 @@ main(int argc, char *argv[])
 					buffer[bt - 1] = '\0';
 				strcpy(output[0], buffer);
 				printf("string received! = '%s'\n", output[0]);
-		} else if (fds[0].revents & POLLHUP) {
+		} else if (fds[0].revents & POLLHUP)
 			die("pipe hangup");
-		}
 	}
+
 	return 0;
 }
