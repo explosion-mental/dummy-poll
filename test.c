@@ -40,7 +40,7 @@ main(int argc, char *argv[])
 
 		/* pipes polling */
 		if (fds[0].revents & POLLIN) {
-				char buffer[CMDLENGTH];
+				char buffer[CMDLENGTH] = {0};
 				int bt = read(pipes[0][0], buffer, LENGTH(buffer));
 				strcpy(output[0], buffer);
 				printf("string received! = '%s'\n", output[0]);
